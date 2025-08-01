@@ -1,2 +1,6 @@
 download mongoDB kafka connector, from : https://www.confluent.io/hub/mongodb/kafka-connect-mongodb
 install mongoDB : MongoDB Community Edition, with gui tool: compass
+ensure the mongoDB service is running in "services" for your PC
+open mongodb compass( or mongo db shell inside compass, I used compass),create  a connection to localhost: mongodb://localhost:27017/
+create database: stockmarket  collection: stock
+add another collection: transaction
