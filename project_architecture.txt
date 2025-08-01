@@ -1,0 +1,9 @@
+project architecture can be described as follows:
+
+1)Data is inserted into a local MongoDB database.
+
+2)MongoDB emits change events (such as inserts/updates) using its change streams feature.
+
+3)The MongoDB Kafka Connector listens to these change streams and publishes the events to a Kafka topic.
+
+4) A PySpark application (using Spark Structured Streaming) consumes the events from the Kafka topic for further processing, analytics, or storage.

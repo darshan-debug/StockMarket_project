@@ -1,0 +1,31 @@
+downloaded kafka binary, and unziped it, to location: C:\kafka\kafka_2.13-3.9.1\
+generated cluster id:
+C:\kafka\kafka_2.13-3.9.1\bin\windows>       .\kafka-storage.bat random-uuid
+4n2aTYG0Tn-ike55mt7i3Q
+then executed this command:
+.\bin\windows\kafka-storage.bat format --standalone -t 4n2aTYG0Tn-ike55mt7i3Q -c config\kraft\server.properties
+
+start the kafka server using this command:
+.\bin\windows\kafka-server-start.bat config\kraft\server.properties
+
+
+other commands:
+
+.\bin\kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092 --config retention.ms=3600000
+
+.\bin\windows\kafka-topics.bat --list --bootstrap-server localhost:9092
+.\bin\windows\kafka-consumer-groups.bat --bootstrap-server localhost:9092 --list
+
+.\bin\windows\kafka-topics.bat --describe --topic quickstart-events --bootstrap-server localhost:9092
+
+.\bin\kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+
+.\bin\windows\kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group my-shared-group
+
+.\bin\windows\kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+.\bin\windows\kafka-console-consumer.bat --topic quickstart-events --bootstrap-server localhost:9092 --group my-shared-group --from-beginning
+
+.\bin\windows\kafka-topics.bat --delete --topic quickstart-events --bootstrap-server localhost:9092
+
+temp log dir( kafka topic data is stored here, delete this dir, to cleanup any topic data): C:\tmp\kraft-combined-logs
+in case of failure, server logs can be found at: C:\kafka\kafka_2.13-3.9.1\logs

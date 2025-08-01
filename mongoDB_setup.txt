@@ -1,0 +1,2 @@
+download mongoDB kafka connector, from : https://www.confluent.io/hub/mongodb/kafka-connect-mongodb
+install mongoDB : MongoDB Community Edition, with gui tool: compass
