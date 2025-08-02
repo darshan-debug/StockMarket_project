@@ -8,4 +8,8 @@ now restart kafka broker
 The MongoDB Kafka Source Connector relies on a feature called Change Streams to get a real-time stream of data changes from MongoDB. Change Streams are only available on a MongoDB Replica Set or a Sharded Cluster. Your current MongoDB instance is a standalone server, which does not support this feature.
 
 The Solution
-You need to convert your standalone MongoDB instance into a single-node replica set. This is a very common setup for local development
+You need to convert your standalone MongoDB instance into a single-node replica set. This is a very common setup for local development.
+made these changes in mongodb installation file: 
+replication:
+  replSetName: "rs0"
+then had to install mongoshell , to reset the mongodb

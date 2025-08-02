@@ -15,7 +15,7 @@ cd C:\kafka\kafka_2.13-3.9.1\
 other commands:
 
 //connector automatically creates topic
-.\bin\windows\kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092 --config retention.ms=3600000
+.\bin\windows\kafka-topics.bat --create --topic quickstart-events.stockmarket.transactions --bootstrap-server localhost:9092 --config retention.ms=3600000
 
 .\bin\windows\kafka-topics.bat --list --bootstrap-server localhost:9092
 .\bin\windows\kafka-consumer-groups.bat --bootstrap-server localhost:9092 --list
@@ -24,7 +24,7 @@ other commands:
 
 .\bin\windows\kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
 
-.\bin\windows\kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group my-shared-group1
+.\bin\windows\kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group file_writer_consumer_group_CG1
 
 .\bin\windows\kafka-console-consumer.bat --topic quickstart-events.stockmarket.transactions --from-beginning --bootstrap-server localhost:9092
 .\bin\windows\kafka-console-consumer.bat --topic quickstart-events.stockmarket.transactions --bootstrap-server localhost:9092 --group my-shared-group1 --from-beginning

@@ -1,1 +1,3 @@
 venv/
+kafka_data_stream/
+checkpoint/

@@ -1,2 +1,5 @@
 pip install confluent-kafka
 pip install pyspark
+
+for spark, had to add actual files:
+1) downloaded from https://spark.apache.org/downloads.html
