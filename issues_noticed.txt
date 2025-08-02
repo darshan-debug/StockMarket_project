@@ -13,3 +13,6 @@ made these changes in mongodb installation file:
 replication:
   replSetName: "rs0"
 then had to install mongoshell , to reset the mongodb
+
+3) spark code ,which reads from file , was failing when ever the code is changed,executed
+solution: clear checkpoint folder, delete files from kafka_data_stream , since they may have old schema

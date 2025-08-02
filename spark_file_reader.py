@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, from_unixtime
+from pyspark.sql.functions import from_json, col, from_unixtime, min, max, count, last
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, TimestampType, IntegerType
 import os
 # --- Spark Session Setup ---
@@ -40,30 +40,35 @@ file_stream_df = spark.readStream \
     .format("json") \
     .schema(schema) \
     .option("path", INPUT_DIR) \
-    .option("maxFilesPerTrigger", 1) \
     .load()
 
 # --- Process the Data ---
 # Convert the timestamp column (assuming it's a Unix timestamp string)
 processed_df = file_stream_df.withColumn(
-    "transaction_id", 
-    col("_id.$oid")
-).withColumn(
-    "price",
+    "price_double",
     col("price").cast("double")
-).select(
-    "transaction_id",
-    "stock",
-    "type",
-    "price"
 )
-# --- Write the streaming data to the console ---
-query = processed_df \
-    .writeStream \
-    .outputMode("append") \
-    .format("console") \
-    .option("checkpointLocation", CHECKPOINT_LOCATION) \
-    .start()
 
+# 2. THE NEW AGGREGATION LOGIC:
+#    Group the data by 'stock' and calculate min, max, and the last seen price.
+stock_summary_df = processed_df.groupBy("stock").agg(
+    count("stock").alias("total_transactions"),
+    min("price_double").alias("min_price"),
+    max("price_double").alias("max_price"),
+    last("price_double").alias("most_recent_price") # New: to get the most recent price
+)
+
+# --- Write the streaming data to the console ---
+# THE NEW TRIGGER AND OUTPUT MODE:
+# Trigger is set to a fixed interval of 30 seconds.
+# This ensures that Spark will run a micro-batch every 30 seconds.
+query = stock_summary_df \
+    .writeStream \
+    .outputMode("update") \
+    .format("console") \
+    .option("truncate", "false") \
+    .option("checkpointLocation", CHECKPOINT_LOCATION) \
+    .trigger(processingTime='30 seconds') \
+    .start()
 # Wait for the termination of the query
 query.awaitTermination()
