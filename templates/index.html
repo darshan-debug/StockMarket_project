@@ -25,11 +25,14 @@
             <table class="min-w-full bg-white">
                 <thead class="bg-blue-600 text-white">
                     <tr>
-                        <th class="py-3 px-4 text-left text-sm font-semibold rounded-tl-lg">Stock</th>                        
-                        <th class="py-3 px-4 text-left text-sm font-semibold">Current NAV</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold rounded-tl-lg">Stock</th>  
+                        <th class="py-3 px-4 text-left text-sm font-semibold">Last Day NAV</th>                      
+                        <th class="py-3 px-4 text-left text-sm font-semibold">Current NAV</th>                        
                         <th class="py-3 px-4 text-left text-sm font-semibold">Low</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold">High</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold rounded-tr-lg">% chnage</th>
                         <th class="py-3 px-4 text-left text-sm font-semibold rounded-tr-lg">Total Transactions</th>
+                        
                     </tr>
                 </thead>
                 <tbody id="stock-data-body" class="divide-y divide-gray-200">
@@ -38,15 +41,17 @@
                         {% for stock in stocks %}
                         <tr class="hover:bg-gray-50">
                             <td class="py-3 px-4 text-sm text-gray-900 font-medium">{{ stock.stock }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-900 font-medium">{{ stock.last_day_price }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ stock.most_recent_price }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ stock.min_price }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ stock.max_price }}</td>  
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ stock.change_percent }}</td>
                             <td class="py-3 px-4 text-sm text-gray-700">{{ stock.total_transactions }}</td>                          
                         </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="5" class="py-4 px-4 text-center text-gray-500">No stock data available yet. Please ensure Spark is running and producing data.</td>
+                            <td colspan="10" class="py-4 px-4 text-center text-gray-500">No stock data available yet. Please ensure Spark is running and producing data.</td>
                         </tr>
                     {% endif %}
                 </tbody>

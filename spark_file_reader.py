@@ -8,7 +8,7 @@ from collections import defaultdict
 import threading
 import time
 from flask import Flask, render_template # Import render_template
-
+import builtins # Import builtins for max function, note: max of spark is colliding with max of python builtins, thus importing builtins explicitly
 stock_trade_data=defaultdict(dict)
 stock_data_lock = threading.Lock() # mutex lock for global var: "stock_trade_data" , to ensure thread-safe access
 app = Flask(__name__, template_folder='templates') # Specify template folder
@@ -19,7 +19,7 @@ def index():
     # Get the overall last updated time (e.g., from the latest stock update)
     overall_last_updated = "N/A"  # Default value if no data is available
     # Convert the defaultdict values to a list for Jinja2 template
-    # Also, format numeric values and percentage here for easier templating
+    
     display_data = []
     with stock_data_lock: # NEW: Use 'with' statement for automatic lock acquisition/release
         for stock_Name, data in stock_trade_data.items():
@@ -28,17 +28,20 @@ def index():
             min_p = data.get('min_price')
             max_p = data.get('max_price')        
             last_updated_time=data.get('last_updated_time', 'N/A') # Already ISO format string
+            last_day_price=data.get('last_day_price', 0) 
             if(overall_last_updated == "N/A"):
                 overall_last_updated = last_updated_time  # Set the first available time as overall last updated
             else:
-                overall_last_updated = max(overall_last_updated, last_updated_time)  # Keep the latest time
+                overall_last_updated = builtins.max(overall_last_updated, last_updated_time)  # Keep the latest time
             display_data.append({
                 'stock': stock_Name,
                 'most_recent_price': f"{current_nav:.2f}" if current_nav is not None else 'N/A',
+                'last_day_price': f"{last_day_price:.2f}" if last_day_price is not None else 0,
                 'min_price': f"{min_p:.2f}" if min_p is not None else 'N/A',
                 'max_price': f"{max_p:.2f}" if max_p is not None else 'N/A',
                 'total_transactions': data.get('total_transactions', 0),
                 'last_updated_time': f"{last_updated_time}" if last_updated_time is not None else 'N/A',
+                'change_percent': f"{(((current_nav - last_day_price) / last_day_price) * 100):.2f}%" if current_nav is not None and last_day_price > 0 else 'N/A'
             })
     
     # Sort data by stock symbol for consistent display
@@ -64,7 +67,8 @@ def run_spark_stream_processor():
         # The "_id" field is a nested structure (another StructType)
         StructField("_id", StructType([
             StructField("$oid", StringType(), True)
-        ]), True),    
+        ]), True), 
+        StructField("previousPrice", StringType(), True), 
         # The "stock" field is a string
         StructField("stock", StringType(), True),    
         # The "type" field is a string
@@ -91,10 +95,13 @@ def run_spark_stream_processor():
         .load()
 
     # --- Process the Data ---
-    # Convert the timestamp column (assuming it's a Unix timestamp string)
+    
     processed_df = file_stream_df.withColumn(
         "price_double",
         col("price").cast("double")
+    ).withColumn(
+        "previousPrice_double",
+        col("previousPrice").cast("double")
     )
 
     # 2. THE NEW AGGREGATION LOGIC:
@@ -103,6 +110,7 @@ def run_spark_stream_processor():
         count("stock").alias("total_transactions"),
         min("price_double").alias("min_price"),
         max("price_double").alias("max_price"),
+        max("previousPrice_double").alias("last_day_price"),
         max_by(col("price_double"), col("received_time")).alias("most_recent_price"),
         # Get the latest event_timestamp itself for the 'last updated' time
         max("received_time").alias("last_updated_time")
@@ -119,7 +127,9 @@ def run_spark_stream_processor():
                         'total_transactions': row['total_transactions'],
                         'min_price': row['min_price'],
                         'max_price': row['max_price'],
-                        'most_recent_price': row['most_recent_price']                
+                        'last_day_price': row['last_day_price'],
+                        'most_recent_price': row['most_recent_price']  ,
+                        'last_updated_time': row['last_updated_time']          
                     }
                 print(stock_trade_data)
             else:

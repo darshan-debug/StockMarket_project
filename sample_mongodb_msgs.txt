@@ -1,0 +1,27 @@
+{
+  "_id": {
+    "$oid": "688f69298d31d6dd2caf5f64"
+  },
+  "stock": "HCL",
+  "previousPrice": "2",
+  "type": "buy",
+  "price": "2.645"
+}
+{
+  "_id": {
+    "$oid": "688f77cf8d31d6dd2caf5f65"
+  },
+  "stock": "TCS",
+  "previousPrice": "20",
+  "type": "buy",
+  "price": "19.39"
+}
+{
+  "_id": {
+    "$oid": "688f77ec8d31d6dd2caf5f66"
+  },
+  "stock": "ICICI",
+  "previousPrice": "5",
+  "type": "buy",
+  "price": "3.16"
+}
