@@ -9,10 +9,9 @@ KAFKA_BROKERS = ['localhost:9092']
 TOPIC_NAME = 'quickstart-events.stockmarket.transactions'
 CONSUMER_GROUP_ID = 'file_writer_consumer_group_CG1'
 
-# Directory where Kafka messages will be written
-# Make sure this directory exists or create it
+# I will store the messages in this directory
 OUTPUT_DIR = 'kafka_data_stream'
-os.makedirs(OUTPUT_DIR, exist_ok=True) # Create the directory if it doesn't exist
+os.makedirs(OUTPUT_DIR, exist_ok=True) # create it, if not exists
 
 # File naming convention
 FILE_PREFIX = "kafka_messages_"
