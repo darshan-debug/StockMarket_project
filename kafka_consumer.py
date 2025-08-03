@@ -24,7 +24,7 @@ FILE_ROTATION_INTERVAL_SECONDS = 60
 def write_to_file(messages, file_path):
     """Appends messages to a file, one JSON object per line."""
     with open(file_path, 'a', encoding='utf-8') as f:
-        for msg in messages:
+        for msg in messages:             # Add received time to each message
             f.write(msg + '\n')
 
 def run_kafka_to_file_writer():
@@ -51,8 +51,11 @@ def run_kafka_to_file_writer():
             if raw_messages:
                 for tp, messages in raw_messages.items():
                     for message in messages:
-                        message_buffer.append(message.value)
-                        print(message.value) # for debugging
+                        msg_dict = json.loads(message.value)
+                        msg_dict['received_time'] = datetime.datetime.now().isoformat()  # Add received time
+                        msg_dict=json.dumps(msg_dict)  # Convert to string for writing                        
+                        message_buffer.append(msg_dict)
+                        print(msg_dict) # for debugging
 
             # Check for file rotation or if buffer is full
             if time.time() - last_rotation_time >= FILE_ROTATION_INTERVAL_SECONDS or len(message_buffer) >= 100: # Write every 100 messages or after interval

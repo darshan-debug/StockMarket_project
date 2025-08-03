@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col, from_unixtime, min, max, count, last
-from pyspark.sql.types import StructType, StructField, StringType, DoubleType, TimestampType, IntegerType
+from pyspark.sql.functions import  col,  min, max, count, max_by
+from pyspark.sql.types import StructType, StructField, StringType
 import os
 # --- Spark Session Setup ---
 spark = SparkSession.builder \
@@ -24,7 +24,8 @@ schema = StructType([
     StructField("type", StringType(), True),    
     # The "price" field is a string in your JSON, but we define it as a Double
     # You would need to cast the string to a Double when reading the data
-    StructField("price", StringType(), True)
+    StructField("price", StringType(), True),
+    StructField("received_time", StringType(), True)
 ])
 
 # --- Read from the File System as a Streaming Source ---
@@ -55,7 +56,9 @@ stock_summary_df = processed_df.groupBy("stock").agg(
     count("stock").alias("total_transactions"),
     min("price_double").alias("min_price"),
     max("price_double").alias("max_price"),
-    last("price_double").alias("most_recent_price") # New: to get the most recent price
+    max_by(col("price_double"), col("received_time")).alias("most_recent_price"),
+    # Get the latest event_timestamp itself for the 'last updated' time
+    max("received_time").alias("last_updated_time")
 )
 
 # --- Write the streaming data to the console ---
