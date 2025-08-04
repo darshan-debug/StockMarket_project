@@ -37,39 +37,72 @@ Developed a **real-time stock market dashboard** simulating live National Stock 
 * **Concurrency & Thread Safety** 🔒: Managing shared resources in multi-threaded environments.
 
 * **Data Visualization & UI/UX Principles** ✨: Presenting complex data clearly and effectively.
-```
 
-project configuration:
+## ⚙️ Project Configurations:
 
+1.  <b>Activate Python Environment:</b>
+    * Activate virtual env (see `notes.txt`) and `pip install` python libs (use command: `pip install -r requirements.txt`)
 
-one time configurations:
-1) pip install requirements
-2) download mongoDB kafka connector, from : https://www.confluent.io/hub/mongodb/kafka-connect-mongodb
-install mongoDB : MongoDB Community Edition, with gui tool: compass
-ensure the mongoDB service is running in "services" for your PC
-open mongodb compass( or mongo db shell inside compass, I used compass),create  a connection to localhost: mongodb://localhost:27017/
-create database: stockmarket  collection: stock
-add another collection: transaction
+2.  <b>MongoDB Setup:</b>
+    * Install <b>MongoDB Community Edition</b>, with GUI tool: Compass.
+    * Ensure the MongoDB service is running in "services" for your PC.
+    * Change replication settings in MongoDB to (you will have to install mongoshell for this):
+        ```yaml
+        replication:
+          replSetName: "rs0"
+        ```
+    * Open MongoDB Compass (or mongo db shell inside Compass, I used Compass), create a connection to `localhost: mongodb://localhost:27017/?replicaSet=rs0`.
+    * Create database: `stockmarket`.
+    * Create collection: `stock`.
+    * Add another collection: `transaction`.
 
-steps to run :
-0) 
-i)cleanup these directories:
-ii) ensure mongoDB service is running in your PC ( search for "services" in start and find mongoDB)
+3.  <b>MongoDB Kafka Connector Setup:</b>
+    * Download MongoDB Kafka Connector JAR from: [https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/1.16.0/](https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/1.16.0/).
+    * Place JAR file in this directory: `C:\kafka\kafka_2.13-3.9.1\connector_config\mongo-kafka-connector`.
+    * Configure MongoDB Kafka Connector:
+        * Place the `MongoSourceConnector.json` in this directory: `C:\kafka\kafka_2.13-3.9.1\connector_config`.
 
-1) execute this command:
-cd C:\kafka\kafka_2.13-3.9.1\
-.\bin\windows\kafka-storage.bat format --standalone -t 4n2aTYG0Tn-ike55mt7i3Q -c config\kraft\server.properties
+---
 
-2) start kafka broker(server) with this command:
-cd C:\kafka\kafka_2.13-3.9.1\
-.\bin\windows\kafka-server-start.bat config\kraft\server.properties
+## ▶️ Steps to Run:
 
-3) start kafka connect worker , using this command:
-cd C:\kafka\kafka_2.13-3.9.1\
-.\bin\windows\connect-standalone.bat config\connect-standalone.properties connector_config\MongoSourceConnector.json
+0.  <b>Pre-Run Checks & Cleanup:</b>
+    * <b>i)</b> Cleanup these directories: `kafka_data_stream`, `file_stream_checkpoint`,`C:\tmp\kraft-combined-logs`
+    * <b>ii)</b> Ensure MongoDB service is running in your PC (search for "services" in start and find MongoDB).
 
-4) trigger code file: kafka_consumer.py
+1.  <b>Generate Kafka Cluster ID:</b>
+    ```bash
+    cd C:\kafka\kafka_2.13-3.9.1\
+    .\bin\windows\kafka-storage.bat format --standalone -t 4n2aTYG0Tn-ike55mt7i3Q -c config\kraft\server.properties
+    ```
 
-5) trigger code file: spark_file_reader.py
+2.  <b>Start Kafka Broker (Server):</b>
+    ```bash
+    cd C:\kafka\kafka_2.13-3.9.1\
+    .\bin\windows\kafka-server-start.bat config\kraft\server.properties
+    ```
 
-6) add/ modify records in transaction collection, of stockmarket DB in mongoDB, aggregated changes will reflect in website , after a  batch process, which happens every 1 min: 
+3.  <b>Start Kafka Connect Worker:</b>
+    ```bash
+    cd C:\kafka\kafka_2.13-3.9.1\
+    .\bin\windows\connect-standalone.bat config\connect-standalone.properties connector_config\MongoSourceConnector.json
+    ```
+
+4.  <b>Trigger Code File:</b> `kafka_consumer.py`
+    (You might want to add `python kafka_consumer.py` here for clarity, but keeping original text).
+
+5.  <b>Trigger Code File:</b> `spark_file_reader.py`
+    (You might want to add `python spark_file_reader.py` here for clarity, but keeping original text).
+
+6.  <b>Observe Live Updates:</b>
+    * Add/modify records in `transaction` collection, of `stockmarket` DB in MongoDB.
+    * Aggregated changes will reflect in website, after a batch process, which happens every 1 min.
+    * Flask website link: [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+
+---
+
+### 🧑‍💻 Developed By:
+
+<b>DARSHAN KUMAR</b><br>
+Software Engineer<br>
+linkedin: [connect with me, here!](https://www.linkedin.com/in/darshan-k-489226201/)

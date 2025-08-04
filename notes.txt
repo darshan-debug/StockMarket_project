@@ -2,3 +2,6 @@ ensure you are in STOCKMARKET_PROJECT directory
 created virtual env using: python -m venv venv
 activate venv using : venv\Scripts\activate
 deactivate env using: deactivate
+
+at the end of project, activate env and use below command to capture the python libs,versions used:
+pip freeze > requirements.txt
