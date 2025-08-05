@@ -6,14 +6,14 @@ import datetime
 
 # --- Configuration ---
 KAFKA_BROKERS = ['localhost:9092']
-TOPIC_NAME = 'quickstart-events.stockmarket.transactions'
+TOPIC_NAME = 'quickstart-events.stockmarket.transactions' # by default , the DB,collection name get added to topic name, by connnector
 CONSUMER_GROUP_ID = 'file_writer_consumer_group_CG1'
 
 # I will store the messages in this directory
 OUTPUT_DIR = 'kafka_data_stream'
-os.makedirs(OUTPUT_DIR, exist_ok=True) # create it, if not exists
+os.makedirs(OUTPUT_DIR, exist_ok=True) 
 
-# File naming convention
+# naming convention for unloaded mss from kafka
 FILE_PREFIX = "kafka_messages_"
 FILE_EXTENSION = ".json" # Assuming your Kafka messages are JSON
 
@@ -23,7 +23,7 @@ FILE_ROTATION_INTERVAL_SECONDS = 60
 def write_to_file(messages, file_path):
     """Appends messages to a file, one JSON object per line."""
     with open(file_path, 'a', encoding='utf-8') as f:
-        for msg in messages:             # Add received time to each message
+        for msg in messages:             
             f.write(msg + '\n')
 
 def run_kafka_to_file_writer():

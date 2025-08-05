@@ -39,3 +39,5 @@ download jar from: https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-
 https://repo1.maven.org/maven2/org/apache/avro/avro/1.11.3/
 cd C:\kafka\kafka_2.13-3.9.1\
 .\bin\windows\connect-standalone.bat config\connect-standalone.properties connector_config\MongoSourceConnector.json
+
+The MongoDB Kafka Connector (specifically, the Source Connector) is designed to stream data changes from a MongoDB replica set or sharded cluster into Kafka topics in real-time. It leverages MongoDB's Change Streams feature.
