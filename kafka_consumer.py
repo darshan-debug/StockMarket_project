@@ -17,22 +17,22 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 FILE_PREFIX = "kafka_messages_"
 FILE_EXTENSION = ".json" # Assuming your Kafka messages are JSON
 
-# How often to rotate files (e.g., every 60 seconds)
+# msgs collected in this duration(maxx 100) are written to a single file
 FILE_ROTATION_INTERVAL_SECONDS = 60
 
 def write_to_file(messages, file_path):
-    """Appends messages to a file, one JSON object per line."""
+    """Appends messages to file, one JSON object per line."""
     with open(file_path, 'a', encoding='utf-8') as f:
         for msg in messages:             
             f.write(msg + '\n')
 
 def run_kafka_to_file_writer():
-    """Consumes Kafka messages and writes them to files."""
+    """consumer code to read messages from Kafka and write them to a file."""
     try:
         consumer = KafkaConsumer(
             TOPIC_NAME,
             bootstrap_servers=KAFKA_BROKERS,
-            auto_offset_reset='earliest', # Start from earliest if no committed offset
+            auto_offset_reset='earliest', # when consuming for the 1st time, reset to earliest available offset
             group_id=CONSUMER_GROUP_ID,
             value_deserializer=lambda m: json.loads(m.decode('utf-8'))
         )
@@ -41,7 +41,7 @@ def run_kafka_to_file_writer():
 
         current_file_path = None
         last_rotation_time = time.time()
-        message_buffer = [] # Buffer messages before writing to file
+        message_buffer = [] # Buffer to hold messages before writing to file
 
         while True:
             # Poll for messages with a timeout
@@ -56,8 +56,8 @@ def run_kafka_to_file_writer():
                         message_buffer.append(msg_dict)
                         print(msg_dict) # for debugging
 
-            # Check for file rotation or if buffer is full
-            if time.time() - last_rotation_time >= FILE_ROTATION_INTERVAL_SECONDS or len(message_buffer) >= 100: # Write every 100 messages or after interval
+            # if buffer is full or 60 seconds have passed, then write to file
+            if time.time() - last_rotation_time >= FILE_ROTATION_INTERVAL_SECONDS or len(message_buffer) >= 100: # Write every 100 messages or after specified interval
                 if message_buffer:
                     timestamp_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                     current_file_path = os.path.join(OUTPUT_DIR, f"{FILE_PREFIX}{timestamp_str}{FILE_EXTENSION}")
@@ -66,8 +66,8 @@ def run_kafka_to_file_writer():
                     message_buffer = [] # Clear buffer
                 last_rotation_time = time.time()
             
-            # If no messages for a while, still try to flush buffer
-            elif message_buffer and time.time() - last_rotation_time >= 5: # Flush every 5 seconds if there are messages
+            # if msgs are coming very slowly, then flush every 5 seconds, useful while testing
+            elif message_buffer and time.time() - last_rotation_time >= 5: 
                  timestamp_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                  current_file_path = os.path.join(OUTPUT_DIR, f"{FILE_PREFIX}{timestamp_str}{FILE_EXTENSION}")
                  write_to_file(message_buffer, current_file_path)
