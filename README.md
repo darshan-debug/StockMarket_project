@@ -138,7 +138,7 @@ linkedin: [connect with me, here!](https://www.linkedin.com/in/darshan-k-4892262
 * simulate stock market transactions by changing prices of existing stocks or add new stocks in "transaction" collection of "stockmarket" db.MongoDB connector monitors for update/insert transaction, and  pushes a event to kafka topic(along with updated/inserted row), which is consumed and saved in file system, by the python consumer code(additional redundant layer).
 ![kafka_consumer](/assets/kafkaFileReaderOutput.JPG)
 
-* files saved in file-system. ( these will be purged at EOD)
+* files saved in file-system. ( these will be purged at EOD) . Feel Free to create  a console-consumer for the kafka topic, for debug purpose & to get a better understanding of the data being received through mongoDB connector.( through kafka topic)
 ![file system](/assets/msgsStoredInFieSystemForRedundancy.JPG)
 
 * spark stream API , monitors for file addition and collects stream data to be aggregated/processed in micro-batches( 50 seconds batch).below screenshot shows the aggregation in progress for a micro-batch
