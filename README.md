@@ -135,7 +135,7 @@ linkedin: [connect with me, here!](https://www.linkedin.com/in/darshan-k-4892262
 * start spark stream service along with flask website -backend: spark_file_reader.py
 ![spark_file_reader](/assets/startSparkStream_backend.JPG)
 
-* simulate stock market transactions by changing prices of existing stocks or add new stocks in "transaction" collection of "stockmarket" db.such a transaction pushes a event to kafka topic, which is consumed and saved in file system(additional redundant layer).
+* simulate stock market transactions by changing prices of existing stocks or add new stocks in "transaction" collection of "stockmarket" db.MongoDB connector monitors for update/insert transaction, and  pushes a event to kafka topic(along with updated/inserted row), which is consumed and saved in file system, by the python consumer code(additional redundant layer).
 ![kafka_consumer](/assets/kafkaFileReaderOutput.JPG)
 
 * files saved in file-system. ( these will be purged at EOD)
