@@ -106,3 +106,44 @@ Developed a **real-time stock market dashboard** simulating live National Stock 
 <b>DARSHAN KUMAR</b><br>
 Software Engineer<br>
 linkedin: [connect with me, here!](https://www.linkedin.com/in/darshan-k-489226201/)
+
+---
+### Screenshots for reference
+* start MongoDB service, if not running already
+![start MongoDB service](/assets/startMongoDBService.JPG)
+
+* create the highlighted DB and collection(with sample documents), as shown:
+![MongoDB screenshot](/assets/mongoDBScreenshot.JPG)
+
+* generate cluster id for kafka
+![cluster id for kafka](/assets/kafkaClusterIDGeneration.JPG)
+
+* start kafka server
+![start kafka server](/assets/startKafkaServer.JPG)
+
+* ensure it is up and running , as shown below
+![start kafka server](/assets/kafkaServerStarted.JPG)
+
+* start MongoDB-kafka connector
+![MongoDB-kafka connector](/assets/startKafkaMongoDB_connector.JPG)
+
+* trigger file: kafka_consumer.py
+![kafka_consumer](/assets/startKafka_consumer.JPG)
+
+* start spark stream service along with flask website -backend: spark_file_reader.py
+![spark_file_reader](/assets/startSparkStream_backend.JPG)
+
+* simulate stock market transactions by changing prices of existing stocks or add new stocks in "transaction" collection of "stockmarket" db.such a transaction pushes a event to kafka topic, which is consumed and saved in file system(additional redundant layer).
+![kafka_consumer](/assets/kafkaFileReaderOutput.JPG)
+
+* files saved in file-system. ( these will be purged at EOD)
+![file system](/assets/msgsStoredInFieSystemForRedundancy.JPG)
+
+* spark stream API , monitors for file addition and collects stream data to be aggregated/processed in micro-batches( 50 seconds batch).below screenshot shows the aggregation in progress for a micro-batch
+![micro batch](/assets/StreamApiBatch.JPG)
+
+* once aggregation of micro-batch stream data is completed, data is updated in NSE(national stock exchange) website
+![micro batch](/assets/streamAggregationInMicroBatches.JPG)
+
+* updated NSE website , showing stock prices , as of "last updated" time. "high","low" ,"currnt NAV","total transactions" values of stock  are updated every 50 seconds, based on aggregation done on stream data.
+![website](/assets/flask_website_afterMicroBatchCompletion.JPG)
