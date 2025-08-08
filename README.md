@@ -104,9 +104,11 @@ Developed a **real-time stock market dashboard** simulating live National Stock 
 ### 🧑‍💻 Developed By:
 
 <b>DARSHAN KUMAR</b><br>
-Software Engineer<br>
+ Software Engineer<br>
 linkedin: [connect with me, here!](https://www.linkedin.com/in/darshan-k-489226201/)
 
+<br><br><br><br>
+---
 ---
 ### Screenshots for reference
 * start MongoDB service, if not running already
