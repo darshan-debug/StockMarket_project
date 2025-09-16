@@ -89,10 +89,10 @@ Developed a **real-time stock market dashboard** simulating live National Stock 
     ```
 
 4.  <b>Trigger Code File:</b> `kafka_consumer.py`
-    (You might want to add `python kafka_consumer.py` here for clarity, but keeping original text).
+    
 
 5.  <b>Trigger Code File:</b> `spark_file_reader.py`
-    (You might want to add `python spark_file_reader.py` here for clarity, but keeping original text).
+    
 
 6.  <b>Observe Live Updates:</b>
     * Add/modify records in `transaction` collection, of `stockmarket` DB in MongoDB.
