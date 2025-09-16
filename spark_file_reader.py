@@ -11,7 +11,7 @@ from flask import Flask, render_template # Import render_template
 import builtins # Import builtins for max function, note: max of spark is colliding with max of python builtins, thus importing builtins explicitly
 stock_trade_data=defaultdict(dict)
 stock_data_lock = threading.Lock() # mutex lock for global var: "stock_trade_data" , to ensure thread-safe access
-app = Flask(__name__, template_folder='templates') # Specify template folder
+app = Flask(__name__, template_folder='templates') 
 
 
 @app.route('/', methods=['GET'])
@@ -96,7 +96,7 @@ def run_spark_stream_processor():
         col("previousPrice").cast("double")
     )
 
-    # 2. THE NEW AGGREGATION LOGIC:
+   
     #    Grouping the data by 'stock' to calculate min, max, and the last seen price.
     stock_summary_df = processed_df.groupBy("stock").agg(
         count("stock").alias("total_transactions"),
@@ -146,9 +146,9 @@ if __name__ == '__main__':
     spark_thread.daemon = True #program shld not wait for this thread to finish, and continue with the main thread
     spark_thread.start()
 
-    # spark thread gets dedicated time to start
+    # spark thred gets dedicated time to start
     time.sleep(10) 
-    # flask app will run in the main thread
+    # flask appp will run in the main thread
     
     print("Starting Flask web server on http://127.0.0.1:5000")
     app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
